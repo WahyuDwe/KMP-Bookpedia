@@ -188,6 +188,7 @@ fun BookListScreen(
                                 if (state.isLoading) {
                                     CircularProgressIndicator()
                                 } else {
+                                    println("state.errorMessage: ${state.errorMessage}")
                                     when {
                                         state.errorMessage != null -> {
                                             Text(
