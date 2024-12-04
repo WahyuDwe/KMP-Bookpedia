@@ -29,12 +29,15 @@ class DefaultBookRepository(
 
     override suspend fun getBookDetails(bookId: String): Result<String?, DataError> {
         val localResult = favoriteBookDao.getFavoriteBookById(bookId)
-        return if (localResult != null){
+        println(
+            "DefaultBookRepository.getBookDetails: localResult = $localResult"
+        )
+        return if (localResult == null){
             remoteBookDateSource
                 .getBookDetails(bookId)
                 .map { it.description }
         } else {
-            Result.Success(localResult?.description)
+            Result.Success(localResult.description)
         }
     }
 
@@ -57,7 +60,7 @@ class DefaultBookRepository(
         return try {
             favoriteBookDao.upsert(book.toBookEntity())
             Result.Success(Unit)
-        } catch (E: SQLiteException) {
+        } catch (e: SQLiteException) {
             Result.Error(DataError.Local.DISK_FULL)
         }
     }
