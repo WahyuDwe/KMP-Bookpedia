@@ -1,5 +1,6 @@
 package com.plcoding.bookpedia.book.data.network
 
+import com.plcoding.bookpedia.book.data.dto.BookWorkDto
 import com.plcoding.bookpedia.book.data.dto.SearchResponseDto
 import com.plcoding.bookpedia.book.domain.Book
 import com.plcoding.bookpedia.core.data.safeCall
@@ -18,7 +19,7 @@ class KtorRemoteBookDateSource(
         query: String,
         resultLimit: Int?
     ): Result<SearchResponseDto, DataError.Remote> {
-        return safeCall {
+        return safeCall<SearchResponseDto> {
             httpClient.get(
                 urlString = "$BASE_URL/search.json"
             ) {
@@ -32,5 +33,13 @@ class KtorRemoteBookDateSource(
             }
         }
 
+    }
+
+    override suspend fun getBookDetails(bookWorkId: String): Result<BookWorkDto, DataError.Remote> {
+        return safeCall<BookWorkDto> {
+            httpClient.get(
+                urlString = "$BASE_URL/works/$bookWorkId.json"
+            )
+        }
     }
 }
